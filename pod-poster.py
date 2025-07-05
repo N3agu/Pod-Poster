@@ -179,8 +179,8 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--root", required=True, help="The root XPath to find episode items.")
     
     # Optional arguments
-    parser.add_argument("-n", "--number", type=int, default=1, help="The number of newest episodes to upload (default: 1).")
-    parser.add_argument("-q", "--quality", type=int, default=64, choices=[32, 48, 64, 96], help="The bitrate for audio compression in kbps. Default: 64.")
+    parser.add_argument("-n", "--number", type=int, default=1, help="The number of newest episodes to upload. Default: 1.")
+    parser.add_argument("-q", "--quality", type=int, default=64, choices=[32, 48, 64, 96], help="The bitrate for audio compression in kbps (32, 48, 64, 96). Default: 64.")
     parser.add_argument("-l", "--level", type=int, default=1, choices=[1, 2, 3], help="Discord server boost level (1=25MB, 2=50MB, 3=100MB). Default: 1.")
     
     # XML structure arguments
