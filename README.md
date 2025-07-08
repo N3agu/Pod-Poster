@@ -59,6 +59,8 @@ python pod-poster.py \
 
 `-l`, `--level`: Discord server boost level (1=25MB, 2=50MB, 3=100MB). Default: 1.
 
+`-e`, `--embed`: Send the message as an embed instead of plain text.
+
 **XML Structure Arguments (for advanced feeds)**
 
 `-t`, `--title_tag`: The XML tag for the episode title. Default: 'title'.
