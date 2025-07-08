@@ -4,7 +4,7 @@ import os
 import argparse
 import time
 import re
-import json # Added for embed payload
+import json
 from pydub import AudioSegment
 
 def compress_mp3(file_path, output_path, bitrate="64k"):
@@ -82,8 +82,8 @@ def process_episode(episode, webhook_url, bitrate, max_size_mb, title_tag, descr
 
         description_element = episode.find(description_tag)
         description = description_element.text.strip() if description_element is not None and description_element.text else ""
-        if len(description) > 500:
-            description = description[:500] + "..."
+        if len(description) > 1000:
+            description = description[:1000] + "..."
         
         media_element = episode.find(media_tag)
         if media_element is None:
