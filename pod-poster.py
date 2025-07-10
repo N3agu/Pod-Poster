@@ -19,18 +19,25 @@ def compress_mp3(file_path, output_path, bitrate="64k"):
         print(f"Could not compress file: {e}")
         return False
 
-def send_to_discord(webhook_url, title, description, file_path, use_embed=False):
+def send_to_discord(webhook_url, title, description, file_path, use_embed=False, embed_color_hex='7289DA'):
     """Sends a file and a message/embed to a Discord webhook."""
     print(f"Uploading '{os.path.basename(file_path)}' to Discord...")
     try:
         with open(file_path, 'rb') as f:
             if use_embed:
+                # Convert hex color string to an integer for the Discord API
+                try:
+                    color_decimal = int(embed_color_hex, 16)
+                except (ValueError, TypeError):
+                    print(f"Warning: Invalid hex color '{embed_color_hex}'. Defaulting to blue.")
+                    color_decimal = 7506394  # Fallback blue color
+                
                 # Construct the embed payload
                 embed_data = {
                     "embeds": [{
                         "title": title,
                         "description": description,
-                        "color": 7506394  # A pleasant blue color
+                        "color": color_decimal
                     }]
                 }
                 # When sending files, the JSON data must be in a form field named 'payload_json'
@@ -70,7 +77,7 @@ def sanitize_filename(name):
     sanitized = sanitized.replace(" ", "_")
     return sanitized[:230]
 
-def process_episode(episode, webhook_url, bitrate, max_size_mb, title_tag, description_tag, media_tag, media_attr, use_embed):
+def process_episode(episode, webhook_url, bitrate, max_size_mb, title_tag, description_tag, media_tag, media_attr, use_embed, embed_color):
     """Downloads, compresses, and uploads a single podcast episode."""
     original_file = None
     compressed_file = None
@@ -127,7 +134,7 @@ def process_episode(episode, webhook_url, bitrate, max_size_mb, title_tag, descr
             return
 
         # 4. Send the compressed file to Discord
-        discord_response = send_to_discord(webhook_url, title, description, compressed_file, use_embed)
+        discord_response = send_to_discord(webhook_url, title, description, compressed_file, use_embed, embed_color)
 
         if discord_response and discord_response.status_code in [200, 204]:
             print("Successfully sent to Discord!")
@@ -177,7 +184,7 @@ def main(args):
             process_episode(
                 episode, args.webhook, args.quality, max_size_mb, 
                 args.title, args.description, args.media_tag, 
-                args.media_attr, args.embed
+                args.media_attr, args.embed, args.embed_color
             )
             time.sleep(2)
 
@@ -201,12 +208,13 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--level", type=int, default=1, choices=[1, 2, 3], help="Discord server boost level (1=25MB, 2=50MB, 3=100MB). Default: 1.")
     parser.add_argument("-e", "--embed", action="store_true", help="Send the message as an embed instead of plain text.")
     
-    # XML structure arguments
+    # XML and Embed structure arguments
     parser.add_argument("-t", "--title", default="title", help="The XML tag for the episode title. Default: 'title'.")
     parser.add_argument(
         "-d", "--description", nargs='?', const='description', default=None, 
         help="The XML tag for the episode description. If not used, no description is sent. Default: 'description'"
     )
+    parser.add_argument("-ec", "--embed-color", default='7289DA', help="The hex color for the embed (e.g., FF0000). Default: blue.")
     parser.add_argument("--media_tag", default="enclosure", help="The XML tag for the media enclosure. Default: 'enclosure'.")
     parser.add_argument("--media_attr", default="url", help="The attribute in the media tag holding the URL. Default: 'url'.")
 

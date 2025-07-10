@@ -67,6 +67,8 @@ python pod-poster.py \
 
 `-d`, `--description`: The XML tag for the episode description. If not used, no description is sent. Default: 'description'
 
+`-e`, `--embed-color`
+
 `--media_tag`: The XML tag for the media enclosure. Default: 'enclosure'.
 
 `--media_attr`: The attribute in the media tag holding the URL. Default: 'url'.
