@@ -38,8 +38,8 @@ python pod-poster.py \
     -n 3 \
     -q 64 \
     -l 1 \
-	-d \
-	-e
+    -d \
+    -e
 ```
 
 ---
