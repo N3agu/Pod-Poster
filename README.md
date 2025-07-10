@@ -63,9 +63,9 @@ python pod-poster.py \
 
 **XML Structure Arguments (for advanced feeds)**
 
-`-t`, `--title_tag`: The XML tag for the episode title. Default: 'title'.
+`-t`, `--title`: The XML tag for the episode title. Default: 'title'.
 
-`-d`, `--description_tag`: The XML tag for the episode description. Default: 'description'.
+`-d`, `--description`: The XML tag for the episode description. If not used, no description is sent. Default: 'description'
 
 `--media_tag`: The XML tag for the media enclosure. Default: 'enclosure'.
 

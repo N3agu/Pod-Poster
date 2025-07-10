@@ -37,7 +37,9 @@ def send_to_discord(webhook_url, title, description, file_path, use_embed=False)
                 payload = {'payload_json': json.dumps(embed_data)}
             else:
                 # Original plain text message format
-                message_content = f"**{title}**\n\n{description}"
+                message_content = f"**{title}**"
+                if description: # Only add description if it exists
+                    message_content += f"\n\n{description}"
                 payload = {"content": message_content}
 
             files = {'file': (os.path.basename(file_path), f)}
@@ -80,10 +82,13 @@ def process_episode(episode, webhook_url, bitrate, max_size_mb, title_tag, descr
             return
         title = title_element.text
 
-        description_element = episode.find(description_tag)
-        description = description_element.text.strip() if description_element is not None and description_element.text else ""
-        if len(description) > 1000:
-            description = description[:1000] + "..."
+        # Description processing is now optional based on the presence of the description_tag
+        description = "" # Default to an empty string
+        if description_tag: # Only process description if the tag is provided
+            description_element = episode.find(description_tag)
+            description = description_element.text.strip() if description_element is not None and description_element.text else ""
+            if len(description) > 1000:
+                description = description[:1000] + "..."
         
         media_element = episode.find(media_tag)
         if media_element is None:
@@ -171,8 +176,8 @@ def main(args):
         for episode in episodes_to_process:
             process_episode(
                 episode, args.webhook, args.quality, max_size_mb, 
-                args.title_tag, args.description_tag, args.media_tag, 
-                args.media_attr, args.embed  # Pass the embed flag
+                args.title, args.description, args.media_tag, 
+                args.media_attr, args.embed
             )
             time.sleep(2)
 
@@ -197,8 +202,11 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--embed", action="store_true", help="Send the message as an embed instead of plain text.")
     
     # XML structure arguments
-    parser.add_argument("-t", "--title_tag", default="title", help="The XML tag for the episode title. Default: 'title'.")
-    parser.add_argument("-d", "--description_tag", default="description", help="The XML tag for the episode description. Default: 'description'.")
+    parser.add_argument("-t", "--title", default="title", help="The XML tag for the episode title. Default: 'title'.")
+    parser.add_argument(
+        "-d", "--description", nargs='?', const='description', default=None, 
+        help="The XML tag for the episode description. If not used, no description is sent. Default: 'description'"
+    )
     parser.add_argument("--media_tag", default="enclosure", help="The XML tag for the media enclosure. Default: 'enclosure'.")
     parser.add_argument("--media_attr", default="url", help="The attribute in the media tag holding the URL. Default: 'url'.")
 
