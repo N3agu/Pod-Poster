@@ -37,7 +37,9 @@ python pod-poster.py \
     -r ".//channel/item" \
     -n 3 \
     -q 64 \
-    -l 1
+    -l 1 \
+	-d \
+	-e
 ```
 
 ---
@@ -67,7 +69,7 @@ python pod-poster.py \
 
 `-d`, `--description`: The XML tag for the episode description. If not used, no description is sent. Default: 'description'
 
-`-e`, `--embed-color`
+`-e`, `--embed-color`: The hex color for the embed (e.g., FF0000). Default: blue.
 
 `--media_tag`: The XML tag for the media enclosure. Default: 'enclosure'.
 
